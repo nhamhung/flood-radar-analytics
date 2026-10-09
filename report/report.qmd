@@ -1,0 +1,277 @@
+---
+title: "Does a Flood Map Transfer to a New Flood?"
+subtitle: "Five water-mapping methods, eleven floods, and what changes from one flood to the next"
+author: "Your Name"
+date: today
+format:
+  html:
+    theme:
+      light: flatly
+      dark: darkly
+    css: styles.css
+    toc: true
+    toc-location: left
+    number-sections: true
+    code-fold: true
+    code-tools: true
+    title-block-banner: true
+    fig-width: 7.5
+    fig-height: 4.5
+    embed-resources: true
+  pdf:
+    toc: true
+    number-sections: true
+    echo: false
+execute:
+  echo: true
+  warning: false
+  message: false
+jupyter: flood-radar-analytics
+---
+
+```{python}
+#| echo: false
+#| output: false
+import json, sys
+sys.path.insert(0, "../src")
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from IPython.display import Markdown
+
+from flood_radar_analytics import config
+
+plt.rcParams.update({"figure.dpi": 130, "axes.spines.top": False, "axes.spines.right": False})
+METHODS = ["VV threshold", "Authors' Otsu", "LightGBM (radar + texture)", "U-Net (radar)", "U-Net (radar + optical)"]
+COLORS = dict(zip(METHODS, ["#8fb4f2", "#81b29a", "#f2cc8f", "#2c5cc5", "#e07a5f"]))
+SHORT = dict(zip(METHODS, ["Threshold", "Otsu", "LightGBM", "U-Net radar", "U-Net radar+optical"]))
+SLUG_NAMES = {"vv_threshold": "VV threshold", "authors_otsu": "Authors' Otsu",
+              "lightgbm_radar_plus_texture": "LightGBM (radar + texture)", "u_net_radar": "U-Net (radar)",
+              "u_net_radar_plus_optical": "U-Net (radar + optical)"}
+
+def iou(c):
+    return c["tp"] / max(c["tp"] + c["fp"] + c["fn"], 1)
+
+bench = json.loads((config.RESULTS_DIR / "benchmark.json").read_text())
+cross = json.loads((config.RESULTS_DIR / "cross_event_classic.json").read_text())
+unet_path = config.RESULTS_DIR / "cross_event_unet.json"
+if unet_path.exists():
+    for event, methods in json.loads(unet_path.read_text())["events"].items():
+        cross["events"][event].update(methods)
+events = cross["events"]
+held_out = pd.DataFrame({e: {m: iou(c) for m, c in d.items()} for e, d in events.items()}).T
+held_out = held_out[[m for m in METHODS if m in held_out.columns]].loc[config.EVENTS]
+pooled = pd.Series({m: iou({k: sum(d[m][k] for d in events.values()) for k in ("tp", "fp", "fn")})
+                    for m in held_out.columns})
+sep = pd.read_csv(config.RESULTS_DIR / "event_separability.csv", index_col=0)
+order = sep["vv_auc"].sort_values().index
+oracle, learned = cross["oracle_threshold_db"], cross["fold_threshold_db"]
+test = {m: s["pooled"]["IoU"] for m, s in bench["splits"]["test"].items()}
+bolivia = {m: s["pooled"]["IoU"] for m, s in bench["splits"]["bolivia"].items()}
+best = pooled.idxmax()
+```
+
+## Introduction
+
+Floods arrive with storm clouds, which blind ordinary (optical) satellites. **Synthetic-aperture radar**
+isn't blind: Sentinel-1 sends its own microwave pulse, day or night, through cloud. Calm water reflects that
+pulse away from the satellite like a mirror, so it appears **dark**; rough land scatters some back.
+
+That makes radar the workhorse of flood mapping — but every flood is different: different landscapes,
+seasons, water depths, wind. A method tuned on past floods is always applied to a new one. This project
+measures how much that matters, comparing five methods of increasing complexity on 11 floods from six
+continents, each scored on a flood it has never seen.
+
+## Data
+
+**Sen1Floods11** (Bonafilia et al., CVPR Workshops 2020): 446 hand-labelled 512×512-pixel chips (~10 m
+pixels) from 11 flood events — Bolivia, Ghana, India, Mekong, Nigeria, Pakistan, Paraguay, Somalia, Spain,
+Sri Lanka, USA. Each chip has Sentinel-1 radar (VV and VH, in dB), Sentinel-2 optical bands from the same
+period (often partly cloudy), a hand label (water / not water), and the JRC permanent-water mask, which
+separates rivers and lakes from new floodwater.
+
+## Methods
+
+| Method | What it uses |
+|---|---|
+| VV threshold | Water where VV is below one dB value, fit on the training floods |
+| Authors' Otsu | The dataset authors' per-scene Otsu threshold — adapts to each scene, no training |
+| LightGBM | Gradient-boosted trees on each pixel's VV, VH, their ratio, and neighbourhood mean / spread at 50 m and 150 m |
+| U-Net (radar) | Convolutional segmentation network (ResNet-34 encoder) on VV, VH and their ratio |
+| U-Net (radar + optical) | The same network with six Sentinel-2 bands and the NDWI water index added |
+
+Two evaluations:
+
+1. **Official split** — the dataset's own train / validation / test chips (drawn from the same 10 floods)
+   plus Bolivia, held out entirely.
+2. **Leave-one-event-out** — for each of the 11 floods: train on the other 10, score on that one. The
+   U-Net chooses its best epoch on 10% of the *training* chips, never the held-out flood.
+
+Metric: **water IoU** (intersection over union), pooled over all valid pixels.
+
+## Results
+
+### On familiar floods, complexity pays
+
+```{python}
+#| echo: false
+rows = {m: {"test": test[m], "Bolivia (unseen)": bolivia[m]} for m in METHODS if m in test}
+pd.DataFrame(rows).T.style.format("{:.3f}")
+```
+
+On the official test split — chips from floods the models trained on — each step up in complexity helps,
+and adding optical bands helps most.
+
+### On a new flood, the picture changes
+
+```{python}
+#| echo: false
+display_table = held_out.loc[order].copy()
+display_table.loc["Pooled"] = pooled
+display_table = display_table.rename(columns=SHORT)
+display_table.style.format("{:.2f}").background_gradient(cmap="RdYlGn", vmin=0, vmax=1, axis=None)
+```
+
+```{python}
+#| echo: false
+lines = [f"Pooled over all 11 held-out floods, **{best}** scores best (IoU {pooled[best]:.2f})."]
+classic = [m for m in ("VV threshold", "Authors' Otsu", "LightGBM (radar + texture)") if m in pooled]
+change = {m: pooled[m] - test[m] for m in pooled.index if m in test}
+lines.append("Compared with the official test split (familiar floods): "
+             + ", ".join(f"{m} {'drops' if v < 0 else 'rises'} {abs(v):.2f}" for m, v in change.items()) + ".")
+if "U-Net (radar + optical)" in held_out.columns:
+    wins = (held_out.idxmax(axis=1) == "U-Net (radar + optical)").sum()
+    lines.append(f"The radar + optical U-Net is the best method on {wins} of 11 held-out floods.")
+else:
+    lines.append("(U-Net cross-flood results pending — rerun this report after `scripts/cross_event.py`.)")
+Markdown(" ".join(lines))
+```
+
+### Why fixed rules break: the right threshold moves
+
+```{python}
+#| fig-cap: "Each flood's own best VV threshold (dots) against the threshold learned from the other ten floods (crosses)."
+fig, ax = plt.subplots(figsize=(8, 3.4))
+x = np.arange(len(order))
+ax.scatter(x, [oracle[e] for e in order], color="#e07a5f", s=50, zorder=3, label="best for that flood")
+ax.scatter(x, [learned[e] for e in order], color="#2c5cc5", marker="x", s=50, zorder=3, label="learned from the others")
+for i, e in enumerate(order):
+    ax.plot([i, i], [oracle[e], learned[e]], color="#bbb", zorder=1)
+ax.set_xticks(x, order, rotation=30, ha="right"); ax.set_ylabel("VV threshold (dB)")
+ax.legend(frameon=False, fontsize=8); plt.tight_layout(); plt.show()
+```
+
+```{python}
+#| echo: false
+o = pd.Series(oracle); l = pd.Series(learned)
+worst = (o - l).abs().idxmax()
+otsu = "Authors' Otsu"
+Markdown(
+    f"Each flood's own best threshold ranges from **{o.min():.2f} to {o.max():.2f} dB** "
+    f"({o.max() - o.min():.1f} dB). Any threshold learned from the other floods lands between "
+    f"{l.min():.2f} and {l.max():.2f} dB — essentially one number. The worst mismatch is "
+    f"**{worst}**: its best threshold is {o[worst]:.2f} dB against a learned {l[worst]:.2f} dB, and the "
+    f"fixed threshold scores IoU {held_out.loc[worst, 'VV threshold']:.2f} there while per-scene Otsu "
+    f"scores {held_out.loc[worst, otsu]:.2f}."
+)
+```
+
+### For radar alone, the flood matters more than the method
+
+```{python}
+#| fig-cap: "Held-out IoU against how separable water is in that flood's radar (VV AUC)."
+fig, ax = plt.subplots(figsize=(7.5, 4.2))
+for m in held_out.columns:
+    ax.scatter(sep.loc[held_out.index, "vv_auc"], held_out[m], s=35, color=COLORS[m], label=m)
+ax.set_xlabel("VV AUC (how well VV alone separates water from land)"); ax.set_ylabel("held-out IoU")
+ax.legend(frameon=False, fontsize=7); plt.tight_layout(); plt.show()
+corr = {m: held_out[m].corr(sep.loc[held_out.index, "vv_auc"]) for m in held_out.columns}
+```
+
+```{python}
+#| echo: false
+hardest, easiest = sep["vv_auc"].idxmin(), sep["vv_auc"].idxmax()
+Markdown(
+    f"How visible water is to radar varies enormously: in **{hardest}** water is only "
+    f"{sep.loc[hardest, 'contrast_db']:.1f} dB darker than land (AUC {sep.loc[hardest, 'vv_auc']:.2f}); in "
+    f"**{easiest}**, {sep.loc[easiest, 'contrast_db']:.1f} dB (AUC {sep.loc[easiest, 'vv_auc']:.2f}). "
+    "Every method's score tracks this closely (correlations "
+    + ", ".join(f"{m} {v:.2f}" for m, v in corr.items())
+    + ")."
+)
+```
+
+```{python}
+#| echo: false
+radar = [m for m in held_out.columns if m != "U-Net (radar + optical)"]
+across_floods = (held_out[radar].max() - held_out[radar].min()).mean()
+across_methods = (held_out[radar].max(axis=1) - held_out[radar].min(axis=1)).mean()
+text = (
+    f"For the radar-only methods, a method's IoU varies by **{across_floods:.2f}** on average from one flood "
+    f"to another, while different methods on the same flood differ by only **{across_methods:.2f}**: which "
+    "flood you're mapping predicts the result better than which radar method you use."
+)
+if "U-Net (radar + optical)" in held_out.columns:
+    opt = held_out["U-Net (radar + optical)"]
+    text += (
+        f" Adding optical bands changes that: the radar + optical U-Net's scores span only "
+        f"{opt.max() - opt.min():.2f} across floods, and its biggest gains come exactly on the floods where "
+        f"radar struggles most (e.g. {hardest}: radar-only best "
+        f"{held_out.loc[hardest, radar].max():.2f}, radar + optical {opt[hardest]:.2f})."
+    )
+Markdown(text)
+```
+
+```{python}
+#| echo: false
+anatomy = {p.stem.removeprefix("error_anatomy_"): json.loads(p.read_text())
+           for p in sorted(config.RESULTS_DIR.glob("error_anatomy_*.json"))}
+if anatomy:
+    rows = {SLUG_NAMES.get(slug, slug): {r["water type"]: r["recall"] for r in a["by_water_type"]}
+            for slug, a in anatomy.items()}
+    display(Markdown("### Where water is missed\n\nRecall (share of labelled water found) on held-out "
+                     "floods, for permanent water (rivers, lakes) and new floodwater:"))
+    display(pd.DataFrame(rows).T.loc[[m for m in METHODS if m in rows]].style.format("{:.2f}"))
+    if "u_net_radar_plus_optical" in anatomy:
+        veg = pd.DataFrame(anatomy["u_net_radar_plus_optical"]["by_vegetation"]).set_index("ndvi")
+        display(Markdown(
+            "Split by vegetation (NDVI from clear-sky Sentinel-2 pixels), the best model's recall collapses "
+            "as vegetation increases — water among or under plants is close to invisible. Labelled water is "
+            "rare in vegetated pixels, so these are small samples:"))
+        display(veg[["water share", "recall", "false-alarm rate"]].style.format(
+            {"water share": "{:.3f}", "recall": "{:.2f}", "false-alarm rate": "{:.4f}"}))
+```
+
+## Limitations
+
+- **Eleven floods is a small sample** for statements about "a new flood"; per-flood scores rest on 15 to
+  69 chips each, and some floods have little water.
+- **Optical data needs clear skies.** The radar + optical model was trained and tested on chips whose
+  Sentinel-2 image is sometimes partly cloudy, but how it behaves under complete cloud cover wasn't tested
+  separately — and real flood response often has no cloud-free optical image at all.
+- **Hand labels have their own uncertainty**, especially at shorelines and in flooded vegetation.
+- **One processing chain.** All radar here was processed identically; mixing radar products from different
+  pipelines can shift values by several dB and break models silently.
+
+## Conclusion
+
+```{python}
+#| echo: false
+radar_only = [m for m in pooled.index if m != "U-Net (radar + optical)"]
+best_radar = pooled[radar_only].idxmax()
+text = (
+    "On familiar floods, more complex models win clearly. On a new flood, every method loses ground, and "
+    "for radar-only methods the result depends more on the flood than on the method: the brightness of "
+    "water in radar shifts by several dB between floods, so any single learned threshold is wrong "
+    "somewhere, and a per-scene method like Otsu beats it exactly on those floods. Among radar-only "
+    f"methods, **{best_radar}** transfers best (pooled IoU {pooled[best_radar]:.2f})."
+)
+if "U-Net (radar + optical)" in pooled:
+    text += (
+        f" Adding optical bands gives the strongest model overall (pooled IoU "
+        f"{pooled['U-Net (radar + optical)']:.2f}) — with the caveat that real flood response often has no "
+        "cloud-free optical image, when only the radar results apply."
+    )
+Markdown(text)
+```

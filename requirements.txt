@@ -1,0 +1,14 @@
+# Full project: training, notebook, report, tests. Direct dependencies only,
+# pinned to the versions this project was built and tested with (Python 3.12).
+# numpy, pandas, scipy and joblib come with these. To only run the app, use
+# app/requirements.txt instead.
+streamlit==1.65.0
+matplotlib==3.11.2
+rasterio==1.5.2
+scikit-learn==1.9.1
+scikit-image==0.26.0
+lightgbm==4.7.0
+torch==2.14.1
+segmentation-models-pytorch==0.5.0
+jupyter==1.1.1
+pytest==9.1.1

@@ -1,0 +1,30 @@
+# Downloaded data & generated artifacts (regenerable — see README)
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+# Model weights are not needed by the app (it shows precomputed results in
+# results/), and the two U-Nets are ~93 MB each.
+models/*.pt
+models/*.joblib
+dist/
+.env
+.streamlit/secrets.toml
+.venv/
+venv/
+_site/
+
+# Quarto render output
+/report/report.html
+!/report/report.html
+/report/report.pdf
+!/report/report.pdf
+/report/report.tex
+/report/.quarto/
+/report/report_files/
+
+__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/
+.DS_Store

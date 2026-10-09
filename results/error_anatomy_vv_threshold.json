@@ -1,0 +1,178 @@
+{
+  "by_water_type": [
+    {
+      "water type": "new floodwater",
+      "water pixels": 7584036,
+      "recall": 0.4455602531422583
+    },
+    {
+      "water type": "permanent water",
+      "water pixels": 3060757,
+      "recall": 0.752710195549663
+    }
+  ],
+  "by_vegetation": [
+    {
+      "ndvi": "bare / water (< 0.2)",
+      "clear-sky pixels": 11588227,
+      "water share": 0.6393039245779358,
+      "recall": 0.5523247330496103,
+      "false-alarm rate": 0.09572690550903051
+    },
+    {
+      "ndvi": "sparse (0.2-0.4)",
+      "clear-sky pixels": 18090956,
+      "water share": 0.01916029202657947,
+      "recall": 0.07812409845713561,
+      "false-alarm rate": 0.0202079222160456
+    },
+    {
+      "ndvi": "moderate (0.4-0.6)",
+      "clear-sky pixels": 28424585,
+      "water share": 0.0036406512179509394,
+      "recall": 0.039262108151984845,
+      "false-alarm rate": 0.008036128256454436
+    },
+    {
+      "ndvi": "dense (> 0.6)",
+      "clear-sky pixels": 24687506,
+      "water share": 0.001849559044157802,
+      "recall": 0.03289459275968551,
+      "false-alarm rate": 0.029215791268876173
+    }
+  ],
+  "by_event_and_water_type": [
+    {
+      "event": "Bolivia",
+      "water type": "permanent water",
+      "water pixels": 29951,
+      "recall": 0.739507862842643
+    },
+    {
+      "event": "Bolivia",
+      "water type": "new floodwater",
+      "water pixels": 421950,
+      "recall": 0.4499774854840621
+    },
+    {
+      "event": "Ghana",
+      "water type": "permanent water",
+      "water pixels": 72594,
+      "recall": 0.8849629445959721
+    },
+    {
+      "event": "Ghana",
+      "water type": "new floodwater",
+      "water pixels": 505114,
+      "recall": 0.30980729102737203
+    },
+    {
+      "event": "India",
+      "water type": "permanent water",
+      "water pixels": 361105,
+      "recall": 0.9207543512274823
+    },
+    {
+      "event": "India",
+      "water type": "new floodwater",
+      "water pixels": 1488507,
+      "recall": 0.40978980952054644
+    },
+    {
+      "event": "Mekong",
+      "water type": "permanent water",
+      "water pixels": 492490,
+      "recall": 0.9933156003167577
+    },
+    {
+      "event": "Mekong",
+      "water type": "new floodwater",
+      "water pixels": 1227436,
+      "recall": 0.6896131447994029
+    },
+    {
+      "event": "Nigeria",
+      "water type": "permanent water",
+      "water pixels": 80050,
+      "recall": 0.9802998126171143
+    },
+    {
+      "event": "Nigeria",
+      "water type": "new floodwater",
+      "water pixels": 867287,
+      "recall": 0.5283579714673459
+    },
+    {
+      "event": "Pakistan",
+      "water type": "permanent water",
+      "water pixels": 76114,
+      "recall": 0.7670993509735397
+    },
+    {
+      "event": "Pakistan",
+      "water type": "new floodwater",
+      "water pixels": 326993,
+      "recall": 0.3037771450765001
+    },
+    {
+      "event": "Paraguay",
+      "water type": "permanent water",
+      "water pixels": 468218,
+      "recall": 0.9851372651200936
+    },
+    {
+      "event": "Paraguay",
+      "water type": "new floodwater",
+      "water pixels": 880586,
+      "recall": 0.22165580647432506
+    },
+    {
+      "event": "Somalia",
+      "water type": "permanent water",
+      "water pixels": 0,
+      "recall": NaN
+    },
+    {
+      "event": "Somalia",
+      "water type": "new floodwater",
+      "water pixels": 349869,
+      "recall": 0.34537784142064604
+    },
+    {
+      "event": "Spain",
+      "water type": "permanent water",
+      "water pixels": 401712,
+      "recall": 0.9660054964750866
+    },
+    {
+      "event": "Spain",
+      "water type": "new floodwater",
+      "water pixels": 614788,
+      "recall": 0.5933069610987852
+    },
+    {
+      "event": "Sri-Lanka",
+      "water type": "permanent water",
+      "water pixels": 812980,
+      "recall": 0.19346847400920072
+    },
+    {
+      "event": "Sri-Lanka",
+      "water type": "new floodwater",
+      "water pixels": 362431,
+      "recall": 0.12674136594275875
+    },
+    {
+      "event": "USA",
+      "water type": "permanent water",
+      "water pixels": 265543,
+      "recall": 0.9502152193806653
+    },
+    {
+      "event": "USA",
+      "water type": "new floodwater",
+      "water pixels": 539075,
+      "recall": 0.5417984510504105
+    }
+  ]
+}

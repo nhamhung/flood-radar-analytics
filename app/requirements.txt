@@ -1,0 +1,7 @@
+# Streamlit app only — the minimal set, pinned to versions verified together
+# (Python 3.12, clean environment, no local data). numpy and pandas come with
+# streamlit. Training dependencies (PyTorch, LightGBM, ...) are in
+# ../requirements.txt and are not needed to run the app.
+streamlit==1.65.0
+matplotlib==3.11.2
+rasterio==1.5.2

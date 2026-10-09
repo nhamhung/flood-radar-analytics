@@ -1,0 +1,21 @@
+---
+title: "Flood Radar Analytics"
+---
+
+## Project
+
+Does a flood map transfer to a new flood? Five water-mapping methods — from a single radar threshold to a radar + optical U-Net — compared leave-one-event-out across 11 floods on six continents (Sen1Floods11).
+
+This GitHub Pages site contains static documentation. The interactive Python application runs separately on Streamlit Community Cloud.
+
+## Use the project
+
+- [Source repository](https://github.com/nhamhhung/flood-radar-analytics)
+- [Interactive Streamlit app](https://flood-radar-analytics.streamlit.app)
+- [Clone, fork, and deployment guide](https://github.com/nhamhhung/flood-radar-analytics/blob/main/docs/SETUP_AND_DEPLOYMENT.md)
+
+## Reproduce it
+
+Clone the repository, create a Python 3.11 or 3.12 environment, install `requirements.txt` and `app/requirements.txt`, run `pytest tests/`, then run `python scripts/smoke_app.py`.
+
+Open Transfer Across Floods, Why Floods Differ, Official Benchmark, and Chip Explorer; open one chip and compare the held-out predictions.
