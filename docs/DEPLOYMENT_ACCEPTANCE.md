@@ -10,10 +10,9 @@ Record one row after initial deployment and every rollback or material deploymen
 | Python version | |
 | Repository URL | https://github.com/nhamhhung/flood-radar-analytics |
 | Pages URL | https://nhamhhung.github.io/flood-radar-analytics/ |
-| Streamlit URL | https://flood-radar-analytics.streamlit.app |
+| Streamlit URL | https://flood-radar-analytics-bg6uugifczndcbtsrps6cd.streamlit.app/ |
 | `/_stcore/health` HTTP 200 | |
 | Core journey | Open Transfer Across Floods, Why Floods Differ, Official Benchmark, and Chip Explorer; open one chip and compare the held-out predictions. |
 | Keyboard/focus/contrast/alternative-text review | |
 | Known-good tag updated | |
 | Notes | |
-

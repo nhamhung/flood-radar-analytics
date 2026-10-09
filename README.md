@@ -91,7 +91,7 @@ The Streamlit app needs no secrets, model weights or local data: it reads the bu
 
 - Repository: <https://github.com/nhamhhung/flood-radar-analytics>
 - Report: <https://nhamhung.github.io/flood-radar-analytics/>
-- Streamlit: <https://flood-radar-analytics.streamlit.app>
+- Streamlit: <https://flood-radar-analytics-bg6uugifczndcbtsrps6cd.streamlit.app/>
 - Fork setup: [docs/SETUP_AND_DEPLOYMENT.md](docs/SETUP_AND_DEPLOYMENT.md)
 
 ## Data and credits

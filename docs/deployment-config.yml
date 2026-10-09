@@ -2,6 +2,6 @@ repository_owner: nhamhhung
 repository_name: flood-radar-analytics
 default_branch: main
 pages_url: https://nhamhhung.github.io/flood-radar-analytics/
-streamlit_url: https://flood-radar-analytics.streamlit.app
+streamlit_url: https://flood-radar-analytics-bg6uugifczndcbtsrps6cd.streamlit.app/
 streamlit_entrypoint: app/streamlit_app.py
 streamlit_secrets: []  # none: results are bundled; chips come from a public bucket

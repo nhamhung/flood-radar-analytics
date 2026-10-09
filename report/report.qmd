@@ -31,7 +31,7 @@ jupyter: flood-radar-analytics
 
 ::: {.callout-tip}
 ## Interactive application
-[Open the Streamlit app](https://flood-radar-analytics.streamlit.app){target="_blank"}
+[Open the Streamlit app](https://flood-radar-analytics-bg6uugifczndcbtsrps6cd.streamlit.app/){target="_blank"}
 :::
 
 ```{python}
