@@ -29,6 +29,11 @@ execute:
 jupyter: flood-radar-analytics
 ---
 
+::: {.callout-tip}
+## Interactive application
+[Open the Streamlit app](https://flood-radar-analytics.streamlit.app){target="_blank"}
+:::
+
 ```{python}
 #| echo: false
 #| output: false
