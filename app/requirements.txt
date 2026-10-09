@@ -4,4 +4,4 @@
 # ../requirements.txt and are not needed to run the app.
 streamlit==1.65.0
 matplotlib==3.11.2
-rasterio==1.5.2
+rasterio==1.4.4
