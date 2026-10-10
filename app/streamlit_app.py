@@ -12,10 +12,10 @@ st.set_page_config(page_title="Flood Radar Analytics", page_icon="🌊", layout=
 
 pages = [
     # Explicit url_path: every page module exports a same-named `render`.
-    st.Page(transfer.render, title="Transfer Across Floods", icon="🌊", url_path="transfer", default=True),
+    st.Page(chip_explorer.render, title="Chip Explorer Demo", icon="🔍", url_path="chips", default=True),
+    st.Page(transfer.render, title="Transfer Across Floods", icon="🌊", url_path="transfer"),
     st.Page(why.render, title="Why Floods Differ", icon="🔬", url_path="why"),
     st.Page(benchmark.render, title="Official Benchmark", icon="📋", url_path="benchmark"),
-    st.Page(chip_explorer.render, title="Chip Explorer", icon="🔍", url_path="chips"),
 ]
 
 st.navigation(pages).run()
