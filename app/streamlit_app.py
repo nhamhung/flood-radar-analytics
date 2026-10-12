@@ -7,8 +7,10 @@ Run (after scripts/download_data.py, train.py, cross_event.py, analyze.py):
 import streamlit as st
 
 from pages_src import benchmark, chip_explorer, transfer, why
+from theme import apply_theme
 
 st.set_page_config(page_title="Flood Radar Analytics", page_icon="🌊", layout="wide")
+apply_theme()
 
 pages = [
     # Explicit url_path: every page module exports a same-named `render`.
