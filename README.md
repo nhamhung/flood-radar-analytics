@@ -44,7 +44,9 @@ much each one degrades on a flood it has never seen (leave-one-event-out).
 |---|---|
 | Streamlit app: transfer across floods, why floods differ, the official benchmark, a chip explorer | `app/streamlit_app.py` + `app/pages_src/` |
 | Research-style writeup (numbers computed from `results/` at render time) | `report/report.qmd` |
-| Notebook walkthrough | `notebooks/01_flood_radar_analytics.ipynb` |
+| Beginner's notebook for classical methods, evaluation and transfer analysis | `notebooks/01_flood_radar_analytics.ipynb` |
+| Separate U-Net walkthrough covering architecture, training, augmentation and tiled inference | `notebooks/02_unet_walkthrough.ipynb` |
+| Non-technical guide to radar, model results and interpreting the project | [Deployed guide](https://nhamhung.github.io/flood-radar-analytics/beginners-guide.html) · `report/beginners_guide.qmd` |
 | Scripts: download, train, leave-one-event-out, analysis | `scripts/` |
 | Result tables (small, committed) | `results/` |
 
@@ -89,8 +91,9 @@ QUARTO_PYTHON=.venv/bin/python quarto render report/report.qmd
 
 The Streamlit app needs no secrets, model weights or local data: it reads the bundled results in `results/`, and the Chip Explorer downloads only the chips a viewer opens from the public Sen1Floods11 bucket. It installs from the minimal, pinned `app/requirements.txt` (streamlit, matplotlib, rasterio).
 
-- Repository: <https://github.com/nhamhhung/flood-radar-analytics>
+- Repository: <https://github.com/nhamhung/flood-radar-analytics>
 - Report: <https://nhamhung.github.io/flood-radar-analytics/>
+- Beginner's guide: <https://nhamhung.github.io/flood-radar-analytics/beginners-guide.html>
 - Streamlit: <https://flood-radar-analytics-bg6uugifczndcbtsrps6cd.streamlit.app/>
 - Fork setup: [docs/SETUP_AND_DEPLOYMENT.md](docs/SETUP_AND_DEPLOYMENT.md)
 

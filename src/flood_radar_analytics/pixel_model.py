@@ -2,8 +2,9 @@
 
 Sits between the threshold and the U-Net in complexity. It sees more than a
 single dB value — each pixel's neighbourhood mean and standard deviation at
-two scales, which capture how smooth (water) or speckled (land) the area
-around it is — but none of the learned spatial shapes a U-Net uses.
+two scales. The means smooth out speckle and carry most of the signal; the
+standard deviations add a little (in dB, dark water is actually *more*
+variable than land). It sees none of the learned spatial shapes a U-Net uses.
 """
 
 import numpy as np
