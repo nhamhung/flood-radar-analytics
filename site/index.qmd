@@ -10,9 +10,9 @@ This GitHub Pages site contains static documentation. The interactive Python app
 
 ## Use the project
 
-- [Source repository](https://github.com/nhamhhung/flood-radar-analytics)
+- [Source repository](https://github.com/nhamhung/flood-radar-analytics)
 - [Interactive Streamlit app](https://flood-radar-analytics-bg6uugifczndcbtsrps6cd.streamlit.app/)
-- [Clone, fork, and deployment guide](https://github.com/nhamhhung/flood-radar-analytics/blob/main/docs/SETUP_AND_DEPLOYMENT.md)
+- [Clone, fork, and deployment guide](https://github.com/nhamhung/flood-radar-analytics/blob/main/docs/SETUP_AND_DEPLOYMENT.md)
 
 ## Reproduce it
 

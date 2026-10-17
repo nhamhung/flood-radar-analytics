@@ -3,7 +3,7 @@
 ## Local setup
 
 ```bash
-git clone https://github.com/nhamhhung/flood-radar-analytics.git
+git clone https://github.com/nhamhung/flood-radar-analytics.git
 cd flood-radar-analytics
 python -m venv .venv
 source .venv/bin/activate
