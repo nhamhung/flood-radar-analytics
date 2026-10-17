@@ -1,5 +1,8 @@
 # Flood Radar Analytics — Does a Flood Map Transfer to a New Flood?
 
+> **New to Python, or just want to try it?** See [START_HERE.md](START_HERE.md): download the ZIP,
+> double-click `start_windows.bat` (Windows) or `start_mac.command` (macOS), and it sets everything up.
+
 Floods arrive with storm clouds that blind ordinary satellites. **Sentinel-1
 radar** sees through them, and calm water shows up dark — which makes radar
 the workhorse of flood mapping. But every flood is different, and a method
@@ -44,9 +47,8 @@ much each one degrades on a flood it has never seen (leave-one-event-out).
 |---|---|
 | Streamlit app: transfer across floods, why floods differ, the official benchmark, a chip explorer | `app/streamlit_app.py` + `app/pages_src/` |
 | Research-style writeup (numbers computed from `results/` at render time) | `report/report.qmd` |
-| Beginner's notebook for classical methods, evaluation and transfer analysis | `notebooks/01_flood_radar_analytics.ipynb` |
-| Separate U-Net walkthrough covering architecture, training, augmentation and tiled inference | `notebooks/02_unet_walkthrough.ipynb` |
-| Non-technical guide to radar, model results and interpreting the project | [Deployed guide](https://nhamhung.github.io/flood-radar-analytics/beginners-guide.html) · `report/beginners_guide.qmd` |
+| Step-by-step notebook guide for beginners: data, inputs, scoring, VV threshold, Otsu, LightGBM, leave-one-event-out, the analyses (never imports PyTorch) | `notebooks/01_flood_radar_analytics.ipynb` |
+| U-Net walkthrough: architecture, inputs, loss, augmentation, a small demo training on the GPU, tiled inference, full-run results (never imports LightGBM) | `notebooks/02_unet_walkthrough.ipynb` |
 | Scripts: download, train, leave-one-event-out, analysis | `scripts/` |
 | Result tables (small, committed) | `results/` |
 

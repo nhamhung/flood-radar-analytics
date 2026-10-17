@@ -1,3 +1,39 @@
+[project]
+name = "flood-radar-analytics"
+version = "1.0.0"
+description = "Flood mapping from Sentinel-1 radar on Sen1Floods11: how well do methods transfer to a new flood?"
+requires-python = ">=3.12,<3.13"
+# Exact versions the project was built and tested with (uv.lock pins everything else).
+dependencies = [
+    "numpy==2.5.3",
+    "pandas==3.0.6",
+    "scipy==1.18.1",
+    "joblib==1.6.0",
+    "matplotlib==3.11.2",
+    "rasterio==1.4.4",  # 1.5.x has macOS wheels only for macOS 15+; 1.4.4 also covers macOS 14 (Apple silicon)
+    "scikit-learn==1.9.1",
+    "scikit-image==0.26.0",
+    "lightgbm==4.7.0",
+    # PyTorch publishes no wheels for Intel Macs: there they are left out (the app and
+    # notebook 01 still work; notebook 02 and the U-Net training need Apple silicon).
+    "torch==2.14.1; sys_platform != 'darwin' or platform_machine == 'arm64'",
+    "segmentation-models-pytorch==0.5.0; sys_platform != 'darwin' or platform_machine == 'arm64'",
+    "streamlit==1.65.0",
+    "jupyterlab==4.6.4",
+    "ipykernel==7.4.0",
+    # Unpacks the libomp fallback scripts/launch.py may fetch on macOS.
+    "backports-zstd==1.8.0; sys_platform == 'darwin'",
+    "ipywidgets==8.1.9",  # progress bars in the notebooks (tqdm)
+]
+
+[dependency-groups]
+dev = ["pytest==9.1.1", "ruff==0.16.10"]
+
+[tool.uv]
+package = false  # a project folder, not an installable library
+# 26.x ships no ready-built wheel for Intel Macs; 25.x does (needed by JupyterLab).
+constraint-dependencies = ["argon2-cffi-bindings<26"]
+
 [tool.ruff]
 target-version = "py311"
 line-length = 100
